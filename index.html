@@ -663,7 +663,7 @@ function releveHTML(pro){const [a,z,lab]=period();const bs=S.biens.filter(b=>b.p
   '<h3>Loyers impayés</h3>'+tb(['Locataire','Logement','Doit'],late.map(b=>[esc(b.nom),esc(unit(b.unitId).name),F(arrears(b))]),[2])+'<div class="foot">Kër Loyer · '+fdate(effToday())+'</div></div>';}
 
 // ===== Exemple =====
-function demoData(){const t=todayISO(),cm=t.slice(0,7);const o=migrate({me:{name:'Famille Seck',phone:'77 879 00 06',address:'Dakar',pay:'77 879 00 06',footer:''},lic:{install:addDays(t,-60)}});
+function demoData(){const t=todayISO(),cm=t.slice(0,7);const o=migrate({me:{name:'Famille Seck',phone:'77 000 00 00',address:'Dakar',pay:'77 000 00 00',footer:''},lic:{install:addDays(t,-60)}});
   const b1={id:uid(),name:'Maison Parcelles',address:'Parcelles U17, Dakar'},b2={id:uid(),name:'Immeuble Liberté 6',address:'Liberté 6, Dakar',proprio:'M. Diop',proprioTel:'770000000',commission:10};o.biens=[b1,b2];
   const U=(bi,name,genre,loyer,mode,prixNuit,prixSemaine,prixMois)=>{const u={id:uid(),bienId:bi.id,name,genre,mode:mode||'mois',loyer:loyer||0,prixNuit:prixNuit||0,prixSemaine:prixSemaine||0,prixMois:prixMois||0,notes:''};o.units.push(u);return u;};
   const u1=U(b1,'Appartement 1er étage','Appartement',150000),u2=U(b1,'Chambre 1','Chambre',45000),u3=U(b1,'Magasin','Magasin',80000),u4=U(b2,'Appartement A1','Appartement',200000),u5=U(b2,'Studio meublé','Studio',0,'nuit',25000,150000,450000),u6=U(b2,'Appartement A2','Appartement',180000);
@@ -761,5 +761,19 @@ document.addEventListener('submit',e=>{e.preventDefault();const f=e.target.id;
   if(f==='fMe'){Object.assign(S.me,{name:val('mName').trim()||S.me.name,phone:val('mPhone').trim(),address:val('mAddr').trim(),pay:val('mPay').trim(),footer:val('mFoot').trim()});save();render();toast('Enregistré');}});
 render();boot();
 
+</script>
+<script>
+/* Démo : les boutons Appeler / WhatsApp vers les numéros d'exemple n'ouvrent rien (le contact Seck Apps marche toujours) */
+(function(){
+  function on(){try{return !!(DEMO)}catch(e){return false}}
+  function num(h){h=String(h||'');var m=h.match(/^(?:tel|sms):\s*([+\d\s.-]+)/i)||h.match(/wa\.me\/\+?(\d+)/i)||h.match(/[?&]phone=\+?(\d+)/i);return m?m[1].replace(/\D/g,''):null}
+  function bad(h){var n=num(h);return !!n&&!/^(221)?778790006$/.test(n)}
+  function msg(h){var tel=/^(tel|sms):/i.test(String(h));var d=document.getElementById('demoMsg');if(!d){d=document.createElement('div');d.id='demoMsg';
+      d.style.cssText='position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:9999;max-width:88vw;background:#13222C;color:#fff;padding:12px 16px;border-radius:14px;font:600 15px/1.35 system-ui,sans-serif;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.3)';document.body.appendChild(d)}
+    d.textContent='Exemple : dans la vraie app, ce bouton '+(tel?'appelle le numéro.':'ouvre WhatsApp.');clearTimeout(d._t);d.style.display='block';d._t=setTimeout(function(){d.style.display='none'},2600)}
+  document.addEventListener('click',function(e){if(!on())return;var a=e.target&&e.target.closest&&e.target.closest('a[href]');if(a&&bad(a.getAttribute('href'))){e.preventDefault();e.stopImmediatePropagation();msg(a.getAttribute('href'))}},true);
+  var ac=HTMLAnchorElement.prototype.click;HTMLAnchorElement.prototype.click=function(){if(on()&&bad(this.getAttribute('href'))){msg(this.getAttribute('href'));return}return ac.apply(this,arguments)};
+  var wo=window.open;window.open=function(u){if(on()&&bad(u)){msg(u);return null}return wo.apply(window,arguments)};
+})();
 </script>
 </body></html>

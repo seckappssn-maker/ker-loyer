@@ -90,7 +90,7 @@ function setLang(l){LANG=l;try{localStorage.setItem('kerLoyer.lang',l);}catch(e)
 
 // Données
 let V=null,P={},ERR='',SEL={u:null,a:'',z:'',ym:''};
-function demo(){const T=todayISO();return{info:{nom:'Famille Seck',ville:'Dakar',tel:'778790006',desc:'Appartements et villa meublés, propres et calmes. Clim, wifi, gardien 24h/24. Paiement Wave ou Orange Money.',
+function demo(){const T=todayISO();return{info:{nom:'Famille Seck',ville:'Dakar',tel:'770000000',desc:'Appartements et villa meublés, propres et calmes. Clim, wifi, gardien 24h/24. Paiement Wave ou Orange Money.',
   units:[{id:'v',name:'Villa F4 avec piscine',genre:'Maison / Villa',desc:'4 chambres, piscine, cuisine équipée, 5 min de la plage',pers:8,prixNuit:85000,prixSemaine:500000,prixMois:1500000,lieu:'Saly Portudal, Mbour',busy:[[addDays(T,-2),addDays(T,8)],[addDays(T,15),addDays(T,19)]]},
    {id:'s',name:'Studio meublé',genre:'Studio',desc:'1 chambre, clim, wifi, balcon',pers:2,prixNuit:25000,prixSemaine:150000,prixMois:450000,lieu:'Liberté 6, Dakar',busy:[[T,addDays(T,3)],[addDays(T,5),addDays(T,7)]]},
    {id:'c',name:'Chambre meublée',genre:'Chambre',desc:'Grand lit, salle de bain privée',pers:2,prixNuit:15000,prixSemaine:90000,prixMois:300000,lieu:'Saly Portudal, Mbour',busy:[[addDays(T,-10),addDays(T,20)]]}]},photos:{}};}
@@ -153,4 +153,18 @@ document.addEventListener('click',e=>{const L=e.target.closest('[data-lang]');if
   const d=e.target.closest('[data-d]');if(d&&!d.disabled){const ip=document.getElementById('cNom');if(ip)SEL.nom=ip.value;pick(d.dataset.d);}});
 document.addEventListener('submit',e=>{e.preventDefault();if(e.target.id==='fRes')send();});
 document.documentElement.lang=LANG==='wo'?'wo':'fr';load();
-</script></body></html>
+</script><script>
+/* Démo : les boutons Appeler / WhatsApp vers les numéros d'exemple n'ouvrent rien (le contact Seck Apps marche toujours) */
+(function(){
+  function on(){try{return !!(V&&V.demo)}catch(e){return false}}
+  function num(h){h=String(h||'');var m=h.match(/^(?:tel|sms):\s*([+\d\s.-]+)/i)||h.match(/wa\.me\/\+?(\d+)/i)||h.match(/[?&]phone=\+?(\d+)/i);return m?m[1].replace(/\D/g,''):null}
+  function bad(h){var n=num(h);return !!n&&!/^(221)?778790006$/.test(n)}
+  function msg(h){var tel=/^(tel|sms):/i.test(String(h));var d=document.getElementById('demoMsg');if(!d){d=document.createElement('div');d.id='demoMsg';
+      d.style.cssText='position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:9999;max-width:88vw;background:#13222C;color:#fff;padding:12px 16px;border-radius:14px;font:600 15px/1.35 system-ui,sans-serif;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.3)';document.body.appendChild(d)}
+    d.textContent='Exemple : dans la vraie app, ce bouton '+(tel?'appelle le numéro.':'ouvre WhatsApp.');clearTimeout(d._t);d.style.display='block';d._t=setTimeout(function(){d.style.display='none'},2600)}
+  document.addEventListener('click',function(e){if(!on())return;var a=e.target&&e.target.closest&&e.target.closest('a[href]');if(a&&bad(a.getAttribute('href'))){e.preventDefault();e.stopImmediatePropagation();msg(a.getAttribute('href'))}},true);
+  var ac=HTMLAnchorElement.prototype.click;HTMLAnchorElement.prototype.click=function(){if(on()&&bad(this.getAttribute('href'))){msg(this.getAttribute('href'));return}return ac.apply(this,arguments)};
+  var wo=window.open;window.open=function(u){if(on()&&bad(u)){msg(u);return null}return wo.apply(window,arguments)};
+})();
+</script>
+</body></html>
